@@ -25,14 +25,22 @@ export async function decodeAudioData(
   sampleRate: number,
   numChannels: number,
 ): Promise<AudioBuffer> {
-  const dataInt16 = new Int16Array(data.buffer);
-  const frameCount = dataInt16.length / numChannels;
+  const frameCount = data.byteLength / (2 * numChannels);
   const buffer = ctx.createBuffer(numChannels, frameCount, sampleRate);
 
   for (let channel = 0; channel < numChannels; channel++) {
     const channelData = buffer.getChannelData(channel);
     for (let i = 0; i < frameCount; i++) {
-      channelData[i] = dataInt16[i * numChannels + channel] / 32768.0;
+      // Explicitly decode 16-bit PCM Little Endian
+      const index = (i * numChannels + channel) * 2;
+      const low = data[index];
+      const high = data[index + 1];
+      let sample = (high << 8) | low;
+      // Sign-extend to 32-bit integer if the 16th bit is set
+      if (sample & 0x8000) {
+        sample = sample - 0x10000;
+      }
+      channelData[i] = sample / 32768.0;
     }
   }
   return buffer;

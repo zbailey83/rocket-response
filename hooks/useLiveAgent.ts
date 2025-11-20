@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { GoogleGenAI, LiveServerMessage, Modality } from '@google/genai';
 import { createPcmBlob, base64ToBytes, decodeAudioData } from '../utils/audioUtils';
@@ -5,10 +6,18 @@ import { createPcmBlob, base64ToBytes, decodeAudioData } from '../utils/audioUti
 interface UseLiveAgentProps {
   businessUrl: string;
   customInstructions?: string;
+  providedInputContext?: AudioContext;
+  providedOutputContext?: AudioContext;
   onDisconnect: () => void;
 }
 
-export const useLiveAgent = ({ businessUrl, customInstructions, onDisconnect }: UseLiveAgentProps) => {
+export const useLiveAgent = ({ 
+  businessUrl, 
+  customInstructions, 
+  providedInputContext,
+  providedOutputContext,
+  onDisconnect 
+}: UseLiveAgentProps) => {
   const [isConnected, setIsConnected] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [audioLevel, setAudioLevel] = useState(0);
@@ -38,15 +47,17 @@ export const useLiveAgent = ({ businessUrl, customInstructions, onDisconnect }: 
       const ai = new GoogleGenAI({ apiKey });
       activeRef.current = true;
 
-      // Initialize Audio Contexts
-      inputContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
-      outputContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
+      // Use provided contexts or create new ones
+      inputContextRef.current = providedInputContext || new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
+      outputContextRef.current = providedOutputContext || new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
 
-      // Resume contexts immediately
-      await Promise.all([
-        inputContextRef.current.resume().catch(e => console.warn("Input context resume failed", e)),
-        outputContextRef.current.resume().catch(e => console.warn("Output context resume failed", e))
-      ]);
+      // Ensure contexts are running
+      if (inputContextRef.current.state === 'suspended') {
+        await inputContextRef.current.resume();
+      }
+      if (outputContextRef.current.state === 'suspended') {
+        await outputContextRef.current.resume();
+      }
 
       // Setup Audio Analyzer for visualizer
       const analyzer = outputContextRef.current.createAnalyser();
@@ -62,7 +73,8 @@ export const useLiveAgent = ({ businessUrl, customInstructions, onDisconnect }: 
           echoCancellation: true,
           noiseSuppression: true,
           autoGainControl: true,
-          sampleRate: 16000
+          sampleRate: 16000,
+          channelCount: 1
         } 
       });
       streamRef.current = stream;
@@ -75,7 +87,7 @@ export const useLiveAgent = ({ businessUrl, customInstructions, onDisconnect }: 
         1. Act as an employee of this business.
         2. Keep responses concise and conversational, suitable for a voice interface.
         3. Do not break character.
-        4. You must introduce yourself immediately when the session starts.
+        4. IMPORTANT: You must introduce yourself immediately when the session starts with a short, welcoming phrase.
         
         ${customInstructions ? `Specific Demo Script / Instructions from the owner:\n${customInstructions}` : ''}
         
@@ -86,9 +98,14 @@ export const useLiveAgent = ({ businessUrl, customInstructions, onDisconnect }: 
       const sessionPromise = ai.live.connect({
         model: 'gemini-2.5-flash-native-audio-preview-09-2025',
         callbacks: {
-          onopen: () => {
+          onopen: async () => {
             console.log('Gemini Live Session Opened');
             setIsConnected(true);
+
+            // Note: We DO NOT send an initial silence packet here as it can cause
+            // race conditions ("Network Error") if the session isn't fully ready.
+            // We rely on the system instruction to prompt the model to speak
+            // and the immediate stream of microphone data to trigger VAD.
 
             // Setup Input Stream Processing
             if (!inputContextRef.current || !streamRef.current) return;
@@ -96,7 +113,7 @@ export const useLiveAgent = ({ businessUrl, customInstructions, onDisconnect }: 
             const source = inputContextRef.current.createMediaStreamSource(streamRef.current);
             sourceRef.current = source;
             
-            // Using ScriptProcessor as per guidance
+            // Using ScriptProcessor for raw PCM access (4096 buffer size)
             const processor = inputContextRef.current.createScriptProcessor(4096, 1, 1);
             processorRef.current = processor;
 
@@ -105,14 +122,19 @@ export const useLiveAgent = ({ businessUrl, customInstructions, onDisconnect }: 
               const inputData = e.inputBuffer.getChannelData(0);
               const pcmBlob = createPcmBlob(inputData);
               
+              // Use the session promise to ensure we are sending to the valid session
               sessionPromise.then((session) => {
                 session.sendRealtimeInput({ media: pcmBlob });
               }).catch(err => {
-                console.error("Error sending audio:", err);
+                // Ignore typical connection closure errors during cleanup
+                if (activeRef.current) {
+                   console.error("Error sending audio frame:", err);
+                }
               });
             };
 
             source.connect(processor);
+            // Required for onaudioprocess to fire in some browsers
             processor.connect(inputContextRef.current.destination);
           },
           onmessage: async (msg: LiveServerMessage) => {
@@ -123,9 +145,13 @@ export const useLiveAgent = ({ businessUrl, customInstructions, onDisconnect }: 
             if (base64Audio) {
               const ctx = outputContextRef.current;
               
-              // Ensure context is running
+              // Ensure context is running (redundant check)
               if (ctx.state === 'suspended') {
-                await ctx.resume();
+                try {
+                  await ctx.resume();
+                } catch (e) {
+                   console.error("Failed to resume audio context", e);
+                }
               }
 
               // Sync timing
@@ -141,7 +167,11 @@ export const useLiveAgent = ({ businessUrl, customInstructions, onDisconnect }: 
 
                 const source = ctx.createBufferSource();
                 source.buffer = audioBuffer;
-                source.connect(outputNode);
+                const gainNode = ctx.createGain();
+                gainNode.gain.value = 1.0; 
+                
+                source.connect(gainNode);
+                gainNode.connect(analyzerRef.current!); 
                 
                 source.addEventListener('ended', () => {
                   sourcesRef.current.delete(source);
@@ -180,7 +210,7 @@ export const useLiveAgent = ({ businessUrl, customInstructions, onDisconnect }: 
           },
           onerror: (err) => {
             console.error('Session error', err);
-            setError("Connection error. Please check your microphone permissions and try again.");
+            setError("Connection error. Please check your network and try again.");
             cleanup();
           }
         },
@@ -200,7 +230,7 @@ export const useLiveAgent = ({ businessUrl, customInstructions, onDisconnect }: 
       setError(e.message || "Failed to connect");
       cleanup();
     }
-  }, [businessUrl, customInstructions]);
+  }, [businessUrl, customInstructions, providedInputContext, providedOutputContext]);
 
   const disconnect = useCallback(() => {
     cleanup();

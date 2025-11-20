@@ -4,9 +4,10 @@ interface OrbVisualizerProps {
   isActive: boolean;
   isSpeaking: boolean;
   audioLevel: number;
+  theme: 'dark' | 'light';
 }
 
-export const OrbVisualizer: React.FC<OrbVisualizerProps> = ({ isActive, isSpeaking, audioLevel }) => {
+export const OrbVisualizer: React.FC<OrbVisualizerProps> = ({ isActive, isSpeaking, audioLevel, theme }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -36,9 +37,9 @@ export const OrbVisualizer: React.FC<OrbVisualizerProps> = ({ isActive, isSpeaki
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Theme Colors: Zinc & Blue
-      // Active: Blue (#3b82f6)
-      // Inactive: Zinc (#52525b)
+      // Theme Colors
+      // Dark: Zinc & Blue
+      // Light: Zinc & Blue (but lighter bg)
       
       const gradient = ctx.createRadialGradient(centerX, centerY, radius * 0.2, centerX, centerY, radius * 1.5);
       
@@ -54,9 +55,14 @@ export const OrbVisualizer: React.FC<OrbVisualizerProps> = ({ isActive, isSpeaki
               gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
           }
       } else {
-          // Inactive: Gray
-          gradient.addColorStop(0, 'rgba(63, 63, 70, 0.4)');
-          gradient.addColorStop(1, 'rgba(63, 63, 70, 0)');
+          // Inactive
+          if (theme === 'dark') {
+            gradient.addColorStop(0, 'rgba(63, 63, 70, 0.4)');
+            gradient.addColorStop(1, 'rgba(63, 63, 70, 0)');
+          } else {
+             gradient.addColorStop(0, 'rgba(161, 161, 170, 0.4)');
+             gradient.addColorStop(1, 'rgba(161, 161, 170, 0)');
+          }
       }
 
       ctx.fillStyle = gradient;
@@ -82,17 +88,31 @@ export const OrbVisualizer: React.FC<OrbVisualizerProps> = ({ isActive, isSpeaki
       
       ctx.closePath();
       
-      // Stroke only for a wireframe look
-      ctx.strokeStyle = isActive 
-        ? (isSpeaking ? '#3b82f6' : '#60a5fa') 
-        : '#52525b';
+      // Stroke style based on theme and activity
+      if (isActive) {
+         ctx.strokeStyle = isSpeaking ? '#3b82f6' : '#60a5fa';
+      } else {
+         ctx.strokeStyle = theme === 'dark' ? '#52525b' : '#d4d4d8';
+      }
+
       ctx.stroke();
       
       // Inner Solid Core
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius * 0.6, 0, Math.PI * 2);
-      ctx.fillStyle = isActive ? '#3b82f6' : '#27272a';
+      if (isActive) {
+         ctx.fillStyle = '#3b82f6';
+      } else {
+         ctx.fillStyle = theme === 'dark' ? '#27272a' : '#f4f4f5';
+      }
       ctx.fill();
+      
+      // If inactive light mode, add a small border to the core so it's visible against white bg
+      if (!isActive && theme === 'light') {
+          ctx.strokeStyle = '#d4d4d8';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+      }
 
       animationFrameId = requestAnimationFrame(render);
     };
@@ -102,7 +122,7 @@ export const OrbVisualizer: React.FC<OrbVisualizerProps> = ({ isActive, isSpeaki
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [isActive, isSpeaking, audioLevel]);
+  }, [isActive, isSpeaking, audioLevel, theme]);
 
   return <canvas ref={canvasRef} className="w-64 h-64 md:w-80 md:h-80" />;
 };

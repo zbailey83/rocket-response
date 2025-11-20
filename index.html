@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,6 +12,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
+        darkMode: 'class',
         theme: {
           extend: {
             fontFamily: {
@@ -20,6 +21,14 @@
             },
             colors: {
               zinc: {
+                50: '#fafafa',
+                100: '#f4f4f5',
+                200: '#e4e4e7',
+                300: '#d4d4d8',
+                400: '#a1a1aa',
+                500: '#71717a',
+                600: '#52525b',
+                700: '#3f3f46',
                 800: '#27272a',
                 900: '#18181b',
                 950: '#09090b',
@@ -38,17 +47,31 @@
       }
     </script>
     <style>
+      :root {
+        --bg-color: #fafafa; /* zinc-50 */
+        --grid-pattern: #e4e4e7; /* zinc-200 */
+        --text-primary: #18181b; /* zinc-900 */
+      }
+      
+      .dark {
+        --bg-color: #09090b; /* zinc-950 */
+        --grid-pattern: #27272a; /* zinc-800 */
+        --text-primary: #fafafa; /* zinc-50 */
+      }
+
       body {
-        background-color: #09090b; /* zinc-950 */
-        color: #fafafa;
+        background-color: var(--bg-color);
+        color: var(--text-primary);
         font-family: 'Inter', sans-serif;
+        transition: background-color 0.3s ease, color 0.3s ease;
       }
       
       /* Technical Grid Background */
       .technical-grid {
-        background-color: #09090b;
-        background-image: radial-gradient(circle, #27272a 1px, transparent 1px);
+        background-color: var(--bg-color);
+        background-image: radial-gradient(circle, var(--grid-pattern) 1px, transparent 1px);
         background-size: 40px 40px;
+        transition: background-color 0.3s ease, background-image 0.3s ease;
       }
 
       /* Custom Scrollbar */
@@ -56,13 +79,19 @@
         width: 6px;
       }
       ::-webkit-scrollbar-track {
-        background: #09090b;
+        background: transparent;
       }
       ::-webkit-scrollbar-thumb {
-        background: #27272a;
+        background: #a1a1aa;
         border-radius: 3px;
       }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #27272a;
+      }
       ::-webkit-scrollbar-thumb:hover {
+        background: #71717a;
+      }
+      .dark ::-webkit-scrollbar-thumb:hover {
         background: #3f3f46;
       }
 
