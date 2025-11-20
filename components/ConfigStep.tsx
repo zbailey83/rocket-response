@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe, ArrowRight, MessageSquare, Cpu } from 'lucide-react';
+import { Globe, ArrowRight, MessageSquare, Cpu, Zap } from 'lucide-react';
 import { RocketLogo } from './RocketLogo';
 
 interface ConfigStepProps {
@@ -16,6 +16,15 @@ export const ConfigStep: React.FC<ConfigStepProps> = ({ onStart }) => {
     if (!url) return;
     setLoading(true);
     onStart(url, instructions);
+  };
+
+  const handleQuickTest = () => {
+    setLoading(true);
+    // Use a generic helpful prompt for the test
+    onStart(
+      "https://test.rocketresponder.ai", 
+      "You are a helpful AI assistant performing a system test. Introduce yourself briefly and ask the user how you can help them test their microphone."
+    );
   };
 
   return (
@@ -71,7 +80,7 @@ export const ConfigStep: React.FC<ConfigStepProps> = ({ onStart }) => {
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     className="w-full bg-transparent border-none outline-none text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-700 py-3 px-2 font-mono-tech text-sm transition-colors duration-300"
-                    required
+                    required={!loading} // Only required if actually submitting form
                   />
                 </div>
               </div>
@@ -94,23 +103,36 @@ export const ConfigStep: React.FC<ConfigStepProps> = ({ onStart }) => {
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-accent-blue hover:bg-blue-600 text-white text-sm font-bold tracking-wide uppercase py-4 px-6 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group shadow-lg shadow-blue-500/20"
-            >
-              {loading ? (
-                <span className="flex items-center gap-2 font-mono-tech">
-                  <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  ESTABLISHING_UPLINK...
-                </span>
-              ) : (
-                <>
-                  <span className="font-mono-tech">Initialize Agent</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </>
-              )}
-            </button>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex-1 bg-accent-blue hover:bg-blue-600 text-white text-sm font-bold tracking-wide uppercase py-4 px-6 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group shadow-lg shadow-blue-500/20"
+              >
+                {loading ? (
+                  <span className="flex items-center gap-2 font-mono-tech">
+                    <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    CONNECTING...
+                  </span>
+                ) : (
+                  <>
+                    <span className="font-mono-tech">Initialize Agent</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleQuickTest}
+                disabled={loading}
+                className="bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-100 text-sm font-bold tracking-wide uppercase py-4 px-6 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed border border-zinc-200 dark:border-zinc-700"
+                title="Skip setup and test connection immediately"
+              >
+                <Zap className="w-4 h-4 text-yellow-500" />
+                <span className="font-mono-tech">Quick Test</span>
+              </button>
+            </div>
           </form>
         </div>
       </div>

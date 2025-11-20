@@ -27,7 +27,8 @@ const App: React.FC = () => {
 
   const handleStart = (url: string, customInstructions: string) => {
     let validUrl = url;
-    if (!url.startsWith('http')) {
+    // Ensure URL has protocol if not present, unless it's a dummy test URL
+    if (!url.startsWith('http') && !url.startsWith('https')) {
       validUrl = `https://${url}`;
     }
     
@@ -42,6 +43,11 @@ const App: React.FC = () => {
   };
 
   const handleClose = () => {
+    // Close contexts to free resources
+    if (audioContexts) {
+      audioContexts.input.close().catch(() => {});
+      audioContexts.output.close().catch(() => {});
+    }
     setActiveUrl(null);
     setInstructions('');
     setAudioContexts(undefined);

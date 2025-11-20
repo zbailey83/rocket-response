@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { PhoneOff, ExternalLink } from 'lucide-react';
+import { PhoneOff, ExternalLink, Mic, MicOff } from 'lucide-react';
 import { OrbVisualizer } from './OrbVisualizer';
 import { useLiveAgent } from '../hooks/useLiveAgent';
 
@@ -23,7 +23,8 @@ export const LiveInterface: React.FC<LiveInterfaceProps> = ({
     disconnect, 
     isConnected, 
     isSpeaking, 
-    audioLevel, 
+    audioLevel,
+    micLevel, 
     error 
   } = useLiveAgent({ 
     businessUrl,
@@ -64,7 +65,7 @@ export const LiveInterface: React.FC<LiveInterfaceProps> = ({
             {isConnected && <div className="absolute inset-0 rounded-full bg-accent-blue animate-ping opacity-75"></div>}
         </div>
         <span className={`text-xs font-mono-tech tracking-wider uppercase ${isConnected ? 'text-zinc-700 dark:text-zinc-300' : 'text-zinc-500'}`}>
-          {isConnected ? (isSpeaking ? 'Transmitting Voice Data' : 'Awaiting Audio Input') : 'Handshake in progress...'}
+          {isConnected ? (isSpeaking ? 'Transmitting Voice Data' : 'Listening for Audio') : 'Handshake in progress...'}
         </span>
       </div>
 
@@ -88,6 +89,20 @@ export const LiveInterface: React.FC<LiveInterfaceProps> = ({
         {/* Decorative Orbit Rings */}
         <div className="absolute inset-0 border border-zinc-200 dark:border-zinc-800 rounded-full scale-110 opacity-50 transition-colors duration-300"></div>
         <div className="absolute inset-0 border border-dashed border-zinc-300 dark:border-zinc-800 rounded-full scale-125 opacity-30 animate-spin-slow transition-colors duration-300"></div>
+      </div>
+
+      {/* Mic Volume Indicator - Important for Debugging */}
+      <div className="mb-8 flex flex-col items-center gap-2">
+        <div className="flex items-center gap-2 text-[10px] font-mono-tech text-zinc-500 uppercase tracking-widest">
+           {micLevel > 1 ? <Mic className="w-3 h-3 text-accent-blue" /> : <MicOff className="w-3 h-3" />}
+           <span>Input Level</span>
+        </div>
+        <div className="w-32 h-1 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+           <div 
+             className="h-full bg-green-500 transition-all duration-100"
+             style={{ width: `${Math.min(100, micLevel * 2)}%` }} // Amplified for visibility
+           ></div>
+        </div>
       </div>
 
       {/* Context Info */}

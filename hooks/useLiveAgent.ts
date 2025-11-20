@@ -1,7 +1,6 @@
-
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { GoogleGenAI, LiveServerMessage, Modality } from '@google/genai';
-import { createPcmBlob, base64ToBytes, decodeAudioData } from '../utils/audioUtils';
+import { createPcmBlob, base64ToBytes, decodeAudioData, downsampleTo16k } from '../utils/audioUtils';
 
 interface UseLiveAgentProps {
   businessUrl: string;
@@ -20,11 +19,12 @@ export const useLiveAgent = ({
 }: UseLiveAgentProps) => {
   const [isConnected, setIsConnected] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [audioLevel, setAudioLevel] = useState(0);
+  const [audioLevel, setAudioLevel] = useState(0); // Agent output level
+  const [micLevel, setMicLevel] = useState(0); // User input level
   const [error, setError] = useState<string | null>(null);
 
   // Refs for cleanup and audio management
-  const sessionRef = useRef<Promise<any> | null>(null);
+  const sessionRef = useRef<any>(null);
   const inputContextRef = useRef<AudioContext | null>(null);
   const outputContextRef = useRef<AudioContext | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -35,6 +35,7 @@ export const useLiveAgent = ({
   const analyzerRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const activeRef = useRef(false);
+  const silenceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const connect = useCallback(async () => {
     if (activeRef.current) return;
@@ -73,7 +74,6 @@ export const useLiveAgent = ({
           echoCancellation: true,
           noiseSuppression: true,
           autoGainControl: true,
-          sampleRate: 16000,
           channelCount: 1
         } 
       });
@@ -87,7 +87,7 @@ export const useLiveAgent = ({
         1. Act as an employee of this business.
         2. Keep responses concise and conversational, suitable for a voice interface.
         3. Do not break character.
-        4. IMPORTANT: You must introduce yourself immediately when the session starts with a short, welcoming phrase.
+        4. IMPORTANT: Always introduce yourself immediately when you receive the system command "Start conversation".
         
         ${customInstructions ? `Specific Demo Script / Instructions from the owner:\n${customInstructions}` : ''}
         
@@ -101,11 +101,11 @@ export const useLiveAgent = ({
           onopen: async () => {
             console.log('Gemini Live Session Opened');
             setIsConnected(true);
-
-            // Note: We DO NOT send an initial silence packet here as it can cause
-            // race conditions ("Network Error") if the session isn't fully ready.
-            // We rely on the system instruction to prompt the model to speak
-            // and the immediate stream of microphone data to trigger VAD.
+            
+            // Trigger Welcome Message
+            sessionPromise.then((session: any) => {
+               session.send({ parts: [{ text: "Start conversation. Say hello to the user." }] });
+            });
 
             // Setup Input Stream Processing
             if (!inputContextRef.current || !streamRef.current) return;
@@ -119,14 +119,29 @@ export const useLiveAgent = ({
 
             processor.onaudioprocess = (e) => {
               if (!activeRef.current) return;
-              const inputData = e.inputBuffer.getChannelData(0);
-              const pcmBlob = createPcmBlob(inputData);
               
-              // Use the session promise to ensure we are sending to the valid session
+              const inputData = e.inputBuffer.getChannelData(0);
+              
+              // Calculate rough Mic Level for UI
+              let sum = 0;
+              for(let i = 0; i < inputData.length; i++) {
+                sum += Math.abs(inputData[i]);
+              }
+              const avg = sum / inputData.length;
+              const amplifiedLevel = Math.min(1, avg * 5); // Amplify for UI
+              setMicLevel(prev => prev * 0.7 + amplifiedLevel * 0.3);
+
+              // IMPORTANT: Downsample to 16kHz if necessary
+              // Most browsers run AudioContext at 44.1k or 48k.
+              // Sending 48k data as 16k pcm results in deep/slow voice and recognition failure.
+              const currentSampleRate = inputContextRef.current?.sampleRate || 16000;
+              const downsampledData = downsampleTo16k(inputData, currentSampleRate);
+              
+              const pcmBlob = createPcmBlob(downsampledData);
+              
               sessionPromise.then((session) => {
                 session.sendRealtimeInput({ media: pcmBlob });
               }).catch(err => {
-                // Ignore typical connection closure errors during cleanup
                 if (activeRef.current) {
                    console.error("Error sending audio frame:", err);
                 }
@@ -134,7 +149,6 @@ export const useLiveAgent = ({
             };
 
             source.connect(processor);
-            // Required for onaudioprocess to fire in some browsers
             processor.connect(inputContextRef.current.destination);
           },
           onmessage: async (msg: LiveServerMessage) => {
@@ -145,16 +159,10 @@ export const useLiveAgent = ({
             if (base64Audio) {
               const ctx = outputContextRef.current;
               
-              // Ensure context is running (redundant check)
               if (ctx.state === 'suspended') {
-                try {
-                  await ctx.resume();
-                } catch (e) {
-                   console.error("Failed to resume audio context", e);
-                }
+                try { await ctx.resume(); } catch (e) { console.error("Failed to resume audio context", e); }
               }
 
-              // Sync timing
               nextStartTimeRef.current = Math.max(nextStartTimeRef.current, ctx.currentTime);
               
               try {
@@ -182,6 +190,8 @@ export const useLiveAgent = ({
                 
                 source.addEventListener('start', () => {
                    setIsSpeaking(true);
+                   // Reset silence timer when agent speaks
+                   if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
                 });
 
                 source.start(nextStartTimeRef.current);
@@ -193,7 +203,6 @@ export const useLiveAgent = ({
               }
             }
 
-            // Handle Interruption
             if (msg.serverContent?.interrupted) {
               console.log('Interrupted');
               sourcesRef.current.forEach(source => {
@@ -241,33 +250,26 @@ export const useLiveAgent = ({
     setIsConnected(false);
     setIsSpeaking(false);
 
-    // Close Session
+    if (silenceTimerRef.current) clearInterval(silenceTimerRef.current);
+
     if (sessionRef.current) {
-      sessionRef.current.then(s => s.close()).catch(() => {});
+      sessionRef.current.then((s: any) => s.close()).catch(() => {});
       sessionRef.current = null;
     }
 
-    // Stop Audio Sources
     sourcesRef.current.forEach(s => {
         try { s.stop(); } catch(e){}
     });
     sourcesRef.current.clear();
 
-    // Close Audio Contexts
-    if (inputContextRef.current?.state !== 'closed') inputContextRef.current?.close();
-    if (outputContextRef.current?.state !== 'closed') outputContextRef.current?.close();
-
-    // Stop Stream
     streamRef.current?.getTracks().forEach(track => track.stop());
-
-    // Disconnect Nodes
     sourceRef.current?.disconnect();
     processorRef.current?.disconnect();
     
     onDisconnect();
   };
 
-  // Visualizer Loop
+  // Visualizer & Inactivity Loop
   useEffect(() => {
     const updateVisualizer = () => {
       if (!analyzerRef.current || !isConnected) {
@@ -281,10 +283,57 @@ export const useLiveAgent = ({
       animationFrameRef.current = requestAnimationFrame(updateVisualizer);
     };
     updateVisualizer();
+
+    // Silence Monitoring Loop
+    const silenceInterval = setInterval(() => {
+      if (!activeRef.current || !isConnected || isSpeaking) return;
+
+      // If mic level is very low (silence) for too long, prompt the model
+      // Note: micLevel is updated in the audio processor
+      // We need a persistent tracking of silence duration.
+      // Simplified logic: If we are here, 1 second has passed.
+      // But we need to know if the user SPOKE recently.
+      // We can reset a timestamp ref whenever micLevel > threshold.
+    }, 1000);
+    
     return () => {
         if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+        clearInterval(silenceInterval);
     };
-  }, [isConnected]);
+  }, [isConnected, isSpeaking]);
+
+  // Specific Silence Detection Logic
+  const lastUserActivityRef = useRef<number>(Date.now());
+  useEffect(() => {
+      if (micLevel > 0.05) { // Threshold for speech
+          lastUserActivityRef.current = Date.now();
+      }
+  }, [micLevel]);
+
+  useEffect(() => {
+      if (!isConnected) return;
+      
+      const checkSilence = setInterval(() => {
+          if (isSpeaking) {
+              lastUserActivityRef.current = Date.now(); // Reset if agent is talking
+              return;
+          }
+
+          const timeSinceActivity = Date.now() - lastUserActivityRef.current;
+          if (timeSinceActivity > 10000) { // 10 seconds silence
+              console.log("Silence detected, nagging user...");
+              if (sessionRef.current) {
+                  sessionRef.current.then((s: any) => {
+                      s.send({ parts: [{ text: "The user has been silent. Politely ask if they are still there or if they need help." }] });
+                  }).catch(() => {});
+              }
+              // Reset to avoid spamming every second
+              lastUserActivityRef.current = Date.now(); 
+          }
+      }, 1000);
+
+      return () => clearInterval(checkSilence);
+  }, [isConnected, isSpeaking]);
 
   return {
     connect,
@@ -292,6 +341,7 @@ export const useLiveAgent = ({
     isConnected,
     isSpeaking,
     audioLevel,
+    micLevel,
     error
   };
 };
