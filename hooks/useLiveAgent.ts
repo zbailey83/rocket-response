@@ -104,7 +104,12 @@ export const useLiveAgent = ({
             
             // Trigger Welcome Message
             sessionPromise.then((session: any) => {
-               session.send({ parts: [{ text: "Start conversation. Say hello to the user." }] });
+               session.sendRealtimeInput({
+                   content: {
+                       role: "user",
+                       parts: [{ text: "Start conversation. Say hello to the user." }]
+                   }
+               });
             });
 
             // Setup Input Stream Processing
@@ -283,22 +288,9 @@ export const useLiveAgent = ({
       animationFrameRef.current = requestAnimationFrame(updateVisualizer);
     };
     updateVisualizer();
-
-    // Silence Monitoring Loop
-    const silenceInterval = setInterval(() => {
-      if (!activeRef.current || !isConnected || isSpeaking) return;
-
-      // If mic level is very low (silence) for too long, prompt the model
-      // Note: micLevel is updated in the audio processor
-      // We need a persistent tracking of silence duration.
-      // Simplified logic: If we are here, 1 second has passed.
-      // But we need to know if the user SPOKE recently.
-      // We can reset a timestamp ref whenever micLevel > threshold.
-    }, 1000);
     
     return () => {
         if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-        clearInterval(silenceInterval);
     };
   }, [isConnected, isSpeaking]);
 
@@ -324,7 +316,12 @@ export const useLiveAgent = ({
               console.log("Silence detected, nagging user...");
               if (sessionRef.current) {
                   sessionRef.current.then((s: any) => {
-                      s.send({ parts: [{ text: "The user has been silent. Politely ask if they are still there or if they need help." }] });
+                      s.sendRealtimeInput({
+                          content: {
+                              role: "user",
+                              parts: [{ text: "The user has been silent. Politely ask if they are still there or if they need help." }]
+                          }
+                      });
                   }).catch(() => {});
               }
               // Reset to avoid spamming every second
