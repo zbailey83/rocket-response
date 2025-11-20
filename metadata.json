@@ -1,0 +1,7 @@
+{
+  "name": "Rocket Responder🚀",
+  "description": "A lead magnet tool to generate instant voice agents for any service business using Gemini Live API.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

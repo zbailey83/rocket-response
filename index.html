@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Voice Agent Generator</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              zinc: {
+                800: '#27272a',
+                900: '#18181b',
+                950: '#09090b',
+              },
+              accent: {
+                blue: '#3b82f6',
+                dim: 'rgba(59, 130, 246, 0.1)',
+              }
+            },
+            animation: {
+              'spin-slow': 'spin 3s linear infinite',
+              'pulse-glow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      body {
+        background-color: #09090b; /* zinc-950 */
+        color: #fafafa;
+        font-family: 'Inter', sans-serif;
+      }
+      
+      /* Technical Grid Background */
+      .technical-grid {
+        background-color: #09090b;
+        background-image: radial-gradient(circle, #27272a 1px, transparent 1px);
+        background-size: 40px 40px;
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #09090b;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #27272a;
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #3f3f46;
+      }
+
+      .font-mono-tech {
+        font-family: 'JetBrains Mono', monospace;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
