@@ -4,6 +4,7 @@ import { HowItWorksSection } from '../components/HowItWorksSection';
 import { FinalCTA } from '../components/FinalCTA';
 import { RocketLogo } from '../components/RocketLogo';
 import Hero from '../components/ui/animated-shader-hero';
+import { FeaturesSectionWithHoverEffects } from '../components/ui/feature-section-with-hover-effects';
 import { PhoneMissed, Clock, CheckCircle2, ArrowRight, MessageSquare, Phone, Globe, Calendar, Smartphone } from 'lucide-react';
 
 interface HomePageProps {
@@ -188,27 +189,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onBookClick, onNaviga
                         <p className="text-zinc-500 text-lg">Powerful AI features designed specifically for real local service businesses.</p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {[
-                            { title: "Speed-to-Lead Response", desc: "Respond to every inquiry in under 60 seconds. Phone, text, web form, or chat. Your AI never sleeps." },
-                            { title: "Natural AI Voice Agent", desc: "Sounds like your best employee. Friendly, professional, and knowledgeable. Callers won't know it's AI." },
-                            { title: "Smart Appointment Booking", desc: "Connects directly to your calendar (Google, Calendly, ServiceTitan, etc.) and books jobs in real-time." },
-                            { title: "Automated Follow-Up", desc: "Automatically follows up with unconverted leads via text/email until they book or opt out." },
-                            { title: "Lead Qualification", desc: "Asks the right questions to qualify leads before booking. Filters out spam and tire-kickers." },
-                            { title: "Review Generation", desc: "Automatically sends review requests after completed jobs to boost your Google rating." },
-                            { title: "Database Reactivation", desc: "Reach out to past customers with personalized offers to fill your schedule on slow days." },
-                            { title: "CRM Integrations", desc: "Works with ServiceTitan, Housecall Pro, Jobber, GoHighLevel, HubSpot, and more." },
-                            { title: "Real-Time Dashboard", desc: "See recordings, transcripts, and booking data instantly. Track your ROI in real-time." }
-                        ].map((feature, i) => (
-                            <div key={i} className="p-8 border border-zinc-200 dark:border-zinc-800 rounded-2xl hover:border-accent-blue transition-colors group bg-zinc-50 dark:bg-zinc-900/50">
-                                <div className="w-10 h-10 rounded-full bg-accent-blue/10 flex items-center justify-center text-accent-blue mb-4 group-hover:scale-110 transition-transform">
-                                    <CheckCircle2 className="w-5 h-5" />
-                                </div>
-                                <h3 className="font-bold text-lg mb-2">{feature.title}</h3>
-                                <p className="text-sm text-zinc-500 leading-relaxed">{feature.desc}</p>
-                            </div>
-                        ))}
-                    </div>
+                    <FeaturesSectionWithHoverEffects />
                 </div>
             </section>
 
