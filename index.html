@@ -1,108 +1,122 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Voice Agent Generator</title>
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Inter', 'system-ui', 'sans-serif'],
-              mono: ['JetBrains Mono', 'monospace'],
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Voice Agent Generator</title>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            zinc: {
+              50: '#fafafa',
+              100: '#f4f4f5',
+              200: '#e4e4e7',
+              300: '#d4d4d8',
+              400: '#a1a1aa',
+              500: '#71717a',
+              600: '#52525b',
+              700: '#3f3f46',
+              800: '#27272a',
+              900: '#18181b',
+              950: '#09090b',
             },
-            colors: {
-              zinc: {
-                50: '#fafafa',
-                100: '#f4f4f5',
-                200: '#e4e4e7',
-                300: '#d4d4d8',
-                400: '#a1a1aa',
-                500: '#71717a',
-                600: '#52525b',
-                700: '#3f3f46',
-                800: '#27272a',
-                900: '#18181b',
-                950: '#09090b',
-              },
-              accent: {
-                blue: '#3b82f6',
-                dim: 'rgba(59, 130, 246, 0.1)',
-              }
-            },
-            animation: {
-              'spin-slow': 'spin 3s linear infinite',
-              'pulse-glow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            accent: {
+              blue: '#3b82f6',
+              dim: 'rgba(59, 130, 246, 0.1)',
             }
           },
+          animation: {
+            'spin-slow': 'spin 3s linear infinite',
+            'pulse-glow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          }
         },
-      }
-    </script>
-    <style>
-      :root {
-        --bg-color: #fafafa; /* zinc-50 */
-        --grid-pattern: #e4e4e7; /* zinc-200 */
-        --text-primary: #18181b; /* zinc-900 */
-      }
-      
-      html {
-        scroll-behavior: smooth;
-      }
-      
-      .dark {
-        --bg-color: #09090b; /* zinc-950 */
-        --grid-pattern: #27272a; /* zinc-800 */
-        --text-primary: #fafafa; /* zinc-50 */
-      }
+      },
+    }
+  </script>
+  <style>
+    :root {
+      --bg-color: #fafafa;
+      /* zinc-50 */
+      --grid-pattern: #e4e4e7;
+      /* zinc-200 */
+      --text-primary: #18181b;
+      /* zinc-900 */
+    }
 
-      body {
-        background-color: var(--bg-color);
-        color: var(--text-primary);
-        font-family: 'Inter', sans-serif;
-        transition: background-color 0.3s ease, color 0.3s ease;
-      }
-      
-      /* Technical Grid Background */
-      .technical-grid {
-        background-color: var(--bg-color);
-        background-image: radial-gradient(circle, var(--grid-pattern) 1px, transparent 1px);
-        background-size: 40px 40px;
-        transition: background-color 0.3s ease, background-image 0.3s ease;
-      }
+    html {
+      scroll-behavior: smooth;
+    }
 
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 6px;
-      }
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #a1a1aa;
-        border-radius: 3px;
-      }
-      .dark ::-webkit-scrollbar-thumb {
-        background: #27272a;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #71717a;
-      }
-      .dark ::-webkit-scrollbar-thumb:hover {
-        background: #3f3f46;
-      }
+    .dark {
+      --bg-color: #09090b;
+      /* zinc-950 */
+      --grid-pattern: #27272a;
+      /* zinc-800 */
+      --text-primary: #fafafa;
+      /* zinc-50 */
+    }
 
-      .font-mono-tech {
-        font-family: 'JetBrains Mono', monospace;
-      }
-    </style>
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Technical Grid Background */
+    .technical-grid {
+      background-color: var(--bg-color);
+      background-image: radial-gradient(circle, var(--grid-pattern) 1px, transparent 1px);
+      background-size: 40px 40px;
+      transition: background-color 0.3s ease, background-image 0.3s ease;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #a1a1aa;
+      border-radius: 3px;
+    }
+
+    .dark ::-webkit-scrollbar-thumb {
+      background: #27272a;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #71717a;
+    }
+
+    .dark ::-webkit-scrollbar-thumb:hover {
+      background: #3f3f46;
+    }
+
+    .font-mono-tech {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
   <script type="importmap">
 {
   "imports": {
@@ -115,7 +129,10 @@
 }
 </script>
 </head>
-  <body>
-    <div id="root"></div>
-  </body>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
 </html>
