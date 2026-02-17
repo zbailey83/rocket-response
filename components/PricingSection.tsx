@@ -11,7 +11,7 @@ export const PricingSection: React.FC<{ onBookClick: () => void }> = ({ onBookCl
                 <div className="text-center mb-16 space-y-4">
                     <h2 className="text-3xl md:text-5xl font-bold">Simple, Transparent Pricing</h2>
                     <p className="text-zinc-500 max-w-2xl mx-auto">
-                        No setup fees. No contracts. Cancel anytime. Start your 14-day free trial today.
+                        No setup fees. No contracts. Cancel anytime. Start your journey today.
                     </p>
                 </div>
 
@@ -26,8 +26,11 @@ export const PricingSection: React.FC<{ onBookClick: () => void }> = ({ onBookCl
                         </div>
                         <p className="text-sm text-zinc-500 mb-6 min-h-[40px]">Perfect for solopreneurs and micro-businesses just getting started.</p>
 
-                        <button className="w-full py-3 border border-accent-blue text-accent-blue font-bold rounded hover:bg-accent-blue/5 transition-colors mb-8">
-                            Start Free 14-Day Trial
+                        <button
+                            onClick={() => window.open('https://buy.stripe.com/cNiaEWgqya9e6tT2sc4Rq00', '_blank')}
+                            className="w-full py-3 border border-accent-blue text-accent-blue font-bold rounded hover:bg-accent-blue/5 transition-colors mb-8"
+                        >
+                            Get Started Now
                         </button>
 
                         <ul className="space-y-3 text-sm">
@@ -59,8 +62,11 @@ export const PricingSection: React.FC<{ onBookClick: () => void }> = ({ onBookCl
                         </div>
                         <p className="text-sm text-zinc-500 mb-6 min-h-[40px]">The full AI receptionist + lead conversion engine for growing businesses.</p>
 
-                        <button className="w-full py-4 bg-accent-blue hover:bg-blue-600 text-white font-bold rounded shadow-lg shadow-blue-500/25 transition-colors mb-8">
-                            Start Free 14-Day Trial
+                        <button
+                            onClick={() => window.open('https://buy.stripe.com/6oU14mgqy5SY4lL6Is4Rq01', '_blank')}
+                            className="w-full py-4 bg-accent-blue hover:bg-blue-600 text-white font-bold rounded shadow-lg shadow-blue-500/25 transition-colors mb-8"
+                        >
+                            Get Started Now
                         </button>
 
                         <ul className="space-y-3 text-sm">
@@ -90,8 +96,11 @@ export const PricingSection: React.FC<{ onBookClick: () => void }> = ({ onBookCl
                         </div>
                         <p className="text-sm text-zinc-500 mb-6 min-h-[40px]">Full-stack AI sales system for serious operators and teams.</p>
 
-                        <button className="w-full py-3 border border-accent-blue text-accent-blue font-bold rounded hover:bg-accent-blue/5 transition-colors mb-8">
-                            Start Free 14-Day Trial
+                        <button
+                            onClick={() => window.open('https://buy.stripe.com/6oU4gygqygxCdWl7Mw4Rq02', '_blank')}
+                            className="w-full py-3 border border-accent-blue text-accent-blue font-bold rounded hover:bg-accent-blue/5 transition-colors mb-8"
+                        >
+                            Get Started Now
                         </button>
 
                         <ul className="space-y-3 text-sm">
@@ -114,18 +123,7 @@ export const PricingSection: React.FC<{ onBookClick: () => void }> = ({ onBookCl
 
                 </div>
 
-                {/* Enterprise */}
-                <div className="mt-12 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
-                    <div className="space-y-4">
-                        <h3 className="text-2xl font-bold">Enterprise & Franchise</h3>
-                        <p className="opacity-80 max-w-xl">
-                            For franchises, multi-location brands, and high-volume operations. Unlimited conversations, custom integrations, white-label options, and dedicated engineering support.
-                        </p>
-                    </div>
-                    <button onClick={onBookClick} className="px-8 py-4 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white font-bold rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors whitespace-nowrap">
-                        Contact Sales
-                    </button>
-                </div>
+
 
             </div>
         </section>

@@ -42,7 +42,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onBookClick, onNaviga
                 subtitle="AI-Powered Agents That Answer, Book, and Follow Up With Every Lead — 24/7/365."
                 buttons={{
                     primary: {
-                        text: "Start Free 14-Day Trial",
+                        text: "Get Started Now",
                         onClick: () => onNavigate('pricing')
                     },
                     secondary: {

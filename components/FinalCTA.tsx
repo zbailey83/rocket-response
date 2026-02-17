@@ -20,7 +20,7 @@ export const FinalCTA: React.FC<FinalCTAProps> = ({ onBookClick, onNavigate }) =
                         onClick={() => onNavigate('pricing')}
                         className="px-10 py-5 bg-white text-accent-blue text-lg font-bold tracking-wide rounded-lg shadow-xl hover:scale-105 transition-all"
                     >
-                        Start Your Free 14-Day Trial
+                        Get Started Now
                     </button>
                     <button
                         onClick={onBookClick}
@@ -31,7 +31,7 @@ export const FinalCTA: React.FC<FinalCTAProps> = ({ onBookClick, onNavigate }) =
                 </div>
 
                 <p className="text-sm opacity-70">
-                    No credit card required • Setup in 48–72 hours • Cancel anytime
+                    Secure checkout via Stripe • Professional setup in 48–72 hours • Cancel anytime
                 </p>
             </div>
         </section>
