@@ -35,7 +35,7 @@ export const useLiveAgent = ({
   const analyzerRef = useRef<AnalyserNode | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const activeRef = useRef(false);
-  const silenceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const silenceTimerRef = useRef<number | null>(null);
 
   const connect = useCallback(async () => {
     if (activeRef.current) return;
