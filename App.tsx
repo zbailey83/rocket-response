@@ -98,9 +98,8 @@ const Layout = ({ theme, toggleTheme, onBookClick }: any) => {
               AI-Powered Agents for Local Service Businesses. Stop losing revenue to missed calls and start booking appointments 24/7.
             </p>
             <div className="flex items-center gap-4 text-zinc-500">
-              <span className="hover:text-accent-blue cursor-pointer">Twitter</span>
-              <span className="hover:text-accent-blue cursor-pointer">LinkedIn</span>
-              <span className="hover:text-accent-blue cursor-pointer">Facebook</span>
+              <a href="https://x.com/zbailey83" target="_blank" rel="noopener noreferrer" className="hover:text-accent-blue transition-colors">X</a>
+              <a href="https://linkedin.com/in/zbailey83" target="_blank" rel="noopener noreferrer" className="hover:text-accent-blue transition-colors">LinkedIn</a>
             </div>
           </div>
 
@@ -121,8 +120,8 @@ const Layout = ({ theme, toggleTheme, onBookClick }: any) => {
             <h4 className="font-bold mb-4 uppercase tracking-wider text-xs text-zinc-400">Contact</h4>
             <ul className="space-y-2 text-zinc-600 dark:text-zinc-400">
 
-              <li className="flex items-center gap-2"><Mail className="w-4 h-4" /> hello@rocketresponseai.com</li>
-              <li>Headquartered in Austin, TX</li>
+              <li className="flex items-center gap-2"><Mail className="w-4 h-4" /> zbailey83@gmail.com</li>
+              <li>Headquartered in Denver, CO</li>
             </ul>
           </div>
 

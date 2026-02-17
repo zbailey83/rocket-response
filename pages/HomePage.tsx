@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { HowItWorksSection } from '../components/HowItWorksSection';
 import { FinalCTA } from '../components/FinalCTA';
 import { RocketLogo } from '../components/RocketLogo';
-import { HeroGeometric } from '../components/ui/shape-landing-hero';
+import Hero from '../components/ui/animated-shader-hero';
 import { PhoneMissed, Clock, CheckCircle2, ArrowRight, MessageSquare, Phone, Globe, Calendar, Smartphone } from 'lucide-react';
 
 interface HomePageProps {
@@ -30,36 +30,26 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onBookClick, onNaviga
     return (
         <>
             {/* HERO SECTION */}
-            <HeroGeometric
-                badge={
-                    <div className="flex items-center gap-2">
-                        <RocketLogo className="w-6 h-6" />
-                        <span className="font-bold tracking-wider text-sm text-white/90">ROCKET_RESPONDER</span>
-                    </div>
-                }
-                title1="Stop Losing Customers to"
-                title2="Missed Calls"
-                description="AI-Powered Agents That Answer, Book, and Follow Up With Every Lead — 24/7/365. Every minute you don't respond, your competitor does."
-            >
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                    <button
-                        onClick={() => onNavigate('pricing')}
-                        className="px-8 py-4 bg-accent-blue hover:bg-blue-600 text-white font-bold tracking-wide rounded transition-all shadow-lg shadow-blue-500/25 flex items-center gap-2 group"
-                    >
-                        <span>Start Free 14-Day Trial</span>
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </button>
-                    <button
-                        onClick={() => onNavigate('/pricing#demo')}
-                        className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold tracking-wide rounded border border-white/20 transition-all backdrop-blur-sm"
-                    >
-                        Try Live Demo
-                    </button>
-                </div>
-                <p className="text-xs text-white/40 pt-4 font-mono">
-                    No contracts. No setup fees. Plans starting at just $97/month.
-                </p>
-            </HeroGeometric>
+            {/* HERO SECTION */}
+            <Hero
+                showLogo={true}
+                headline={{
+                    line1: "ROCKET RESPONSE",
+                    line2: "AI"
+                }}
+                tagline="Voice Automation Systems"
+                subtitle="AI-Powered Agents That Answer, Book, and Follow Up With Every Lead — 24/7/365."
+                buttons={{
+                    primary: {
+                        text: "Start Free 14-Day Trial",
+                        onClick: () => onNavigate('pricing')
+                    },
+                    secondary: {
+                        text: "Try Live Demo",
+                        onClick: () => onNavigate('/pricing#demo')
+                    }
+                }}
+            />
 
             {/* PROBLEM SECTION */}
             <section id="problem" className="py-24 bg-zinc-50 dark:bg-zinc-900/50 border-y border-zinc-200 dark:border-zinc-800 scroll-mt-28">
