@@ -5,6 +5,7 @@ import { RocketLogo } from './components/RocketLogo';
 import { Mail } from 'lucide-react';
 import { HomePage } from './pages/HomePage';
 import { PricingPage } from './pages/PricingPage';
+import { TapedFooter } from './components/ui/footer-taped-design';
 
 // Wrapper component to provide navigation capability to Header inside Router context
 // But wait, Header is inside Router in the main App return, so it works.
@@ -86,51 +87,7 @@ const Layout = ({ theme, toggleTheme, onBookClick }: any) => {
         <Route path="/pricing" element={<PricingPage onBookClick={onBookClick} onNavigate={onNavigate} />} />
       </Routes>
 
-      <footer className="py-16 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-sm">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12">
-
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <RocketLogo className="w-6 h-6" />
-              <span className="font-bold tracking-wider text-lg">ROCKET_RESPONDER</span>
-            </div>
-            <p className="text-zinc-500 leading-relaxed">
-              AI-Powered Agents for Local Service Businesses. Stop losing revenue to missed calls and start booking appointments 24/7.
-            </p>
-            <div className="flex items-center gap-4 text-zinc-500">
-              <a href="https://x.com/zbailey83" target="_blank" rel="noopener noreferrer" className="hover:text-accent-blue transition-colors">X</a>
-              <a href="https://linkedin.com/in/zbailey83" target="_blank" rel="noopener noreferrer" className="hover:text-accent-blue transition-colors">LinkedIn</a>
-            </div>
-          </div>
-
-          <div>
-            <h4 className="font-bold mb-4 uppercase tracking-wider text-xs text-zinc-400">Product</h4>
-            <ul className="space-y-2 text-zinc-600 dark:text-zinc-400">
-              <li className="hover:text-accent-blue cursor-pointer" onClick={() => scrollToId('features')}>Features</li>
-              <li className="hover:text-accent-blue cursor-pointer" onClick={() => scrollToId('how-it-works')}>How It Works</li>
-              <li className="hover:text-accent-blue cursor-pointer" onClick={() => scrollToId('demo', '/pricing')}>Live Demo</li>
-              <li className="hover:text-accent-blue cursor-pointer" onClick={() => onNavigate('/pricing')}>Pricing</li>
-              <li className="hover:text-accent-blue cursor-pointer" onClick={() => scrollToId('roi-calculator', '/pricing')}>ROI Calculator</li>
-            </ul>
-          </div>
-
-
-
-          <div>
-            <h4 className="font-bold mb-4 uppercase tracking-wider text-xs text-zinc-400">Contact</h4>
-            <ul className="space-y-2 text-zinc-600 dark:text-zinc-400">
-
-              <li className="flex items-center gap-2"><Mail className="w-4 h-4" /> zbailey83@gmail.com</li>
-              <li>Headquartered in Denver, CO</li>
-            </ul>
-          </div>
-
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800 text-center text-zinc-500 font-mono-tech text-xs">
-          © 2025 ROCKET RESPONSE AI. ALL RIGHTS RESERVED.
-        </div>
-      </footer>
+      <TapedFooter />
     </div>
   );
 }
