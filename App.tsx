@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { Header } from './components/Header';
 import { RocketLogo } from './components/RocketLogo';
-import { Phone, Mail } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import { HomePage } from './pages/HomePage';
 import { PricingPage } from './pages/PricingPage';
 
@@ -87,7 +87,7 @@ const Layout = ({ theme, toggleTheme, onBookClick }: any) => {
       </Routes>
 
       <footer className="py-16 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 text-sm">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12">
 
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -108,28 +108,19 @@ const Layout = ({ theme, toggleTheme, onBookClick }: any) => {
             <h4 className="font-bold mb-4 uppercase tracking-wider text-xs text-zinc-400">Product</h4>
             <ul className="space-y-2 text-zinc-600 dark:text-zinc-400">
               <li className="hover:text-accent-blue cursor-pointer" onClick={() => scrollToId('features')}>Features</li>
-              <li className="hover:text-accent-blue cursor-pointer" onClick={() => onNavigate('/pricing')}>Pricing</li>
               <li className="hover:text-accent-blue cursor-pointer" onClick={() => scrollToId('how-it-works')}>How It Works</li>
+              <li className="hover:text-accent-blue cursor-pointer" onClick={() => scrollToId('demo', '/pricing')}>Live Demo</li>
+              <li className="hover:text-accent-blue cursor-pointer" onClick={() => onNavigate('/pricing')}>Pricing</li>
               <li className="hover:text-accent-blue cursor-pointer" onClick={() => scrollToId('roi-calculator', '/pricing')}>ROI Calculator</li>
             </ul>
           </div>
 
-          <div>
-            <h4 className="font-bold mb-4 uppercase tracking-wider text-xs text-zinc-400">Industries</h4>
-            <ul className="space-y-2 text-zinc-600 dark:text-zinc-400">
-              <li>Plumbing</li>
-              <li>HVAC</li>
-              <li>Roofing</li>
-              <li>Dental</li>
-              <li>Legal</li>
-              <li>Automotive</li>
-            </ul>
-          </div>
+
 
           <div>
             <h4 className="font-bold mb-4 uppercase tracking-wider text-xs text-zinc-400">Contact</h4>
             <ul className="space-y-2 text-zinc-600 dark:text-zinc-400">
-              <li className="flex items-center gap-2"><Phone className="w-4 h-4" /> (888) 555-ROCKET</li>
+
               <li className="flex items-center gap-2"><Mail className="w-4 h-4" /> hello@rocketresponseai.com</li>
               <li>Headquartered in Austin, TX</li>
             </ul>

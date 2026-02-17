@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { DemoWidget } from '../components/DemoWidget';
 import { HowItWorksSection } from '../components/HowItWorksSection';
 import { FinalCTA } from '../components/FinalCTA';
+import { RocketLogo } from '../components/RocketLogo';
+import { HeroGeometric } from '../components/ui/shape-landing-hero';
 import { PhoneMissed, Clock, CheckCircle2, ArrowRight, MessageSquare, Phone, Globe, Calendar, Smartphone } from 'lucide-react';
 
 interface HomePageProps {
@@ -29,49 +30,36 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onBookClick, onNaviga
     return (
         <>
             {/* HERO SECTION */}
-            <section className="relative pt-20 pb-32 px-6 flex flex-col items-center text-center overflow-hidden">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] bg-accent-blue/10 blur-[120px] rounded-full pointer-events-none" />
-
-                <div className="relative z-10 max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur text-xs font-mono-tech text-zinc-500">
-                        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                        TRUSTED BY 2,000+ LOCAL BUSINESSES
+            <HeroGeometric
+                badge={
+                    <div className="flex items-center gap-2">
+                        <RocketLogo className="w-6 h-6" />
+                        <span className="font-bold tracking-wider text-sm text-white/90">ROCKET_RESPONDER</span>
                     </div>
-
-                    <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-[1.1]">
-                        Stop Losing Customers to <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">Missed Calls</span>
-                    </h1>
-
-                    <h2 className="text-xl md:text-2xl font-medium text-zinc-800 dark:text-zinc-200 max-w-3xl mx-auto">
-                        AI-Powered Agents That Answer, Book, and Follow Up With Every Lead — 24/7/365
-                    </h2>
-
-                    <p className="text-lg text-zinc-600 dark:text-zinc-400 max-w-3xl mx-auto leading-relaxed">
-                        Every minute you don't respond, your competitor does. Rocket Response AI gives plumbers, roofers, dentists, and lawyers an always-on AI agent that responds in <span className="text-zinc-900 dark:text-zinc-100 font-bold">under 60 seconds</span>.
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-                        <button
-                            onClick={() => onNavigate('pricing')}
-                            className="px-8 py-4 bg-accent-blue hover:bg-blue-600 text-white font-bold tracking-wide rounded transition-all shadow-lg shadow-blue-500/25 flex items-center gap-2 group"
-                        >
-                            <span>Start Free 14-Day Trial</span>
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </button>
-                        <button
-                            onClick={() => onNavigate('demo')}
-                            className="px-8 py-4 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-100 font-bold tracking-wide rounded border border-zinc-200 dark:border-zinc-700 transition-all"
-                        >
-                            Try Live Demo
-                        </button>
-                    </div>
-
-                    <p className="text-xs text-zinc-500 pt-2">
-                        No contracts. No setup fees. Plans starting at just $97/month.
-                    </p>
+                }
+                title1="Stop Losing Customers to"
+                title2="Missed Calls"
+                description="AI-Powered Agents That Answer, Book, and Follow Up With Every Lead — 24/7/365. Every minute you don't respond, your competitor does."
+            >
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                    <button
+                        onClick={() => onNavigate('pricing')}
+                        className="px-8 py-4 bg-accent-blue hover:bg-blue-600 text-white font-bold tracking-wide rounded transition-all shadow-lg shadow-blue-500/25 flex items-center gap-2 group"
+                    >
+                        <span>Start Free 14-Day Trial</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                    <button
+                        onClick={() => onNavigate('/pricing#demo')}
+                        className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold tracking-wide rounded border border-white/20 transition-all backdrop-blur-sm"
+                    >
+                        Try Live Demo
+                    </button>
                 </div>
-            </section>
+                <p className="text-xs text-white/40 pt-4 font-mono">
+                    No contracts. No setup fees. Plans starting at just $97/month.
+                </p>
+            </HeroGeometric>
 
             {/* PROBLEM SECTION */}
             <section id="problem" className="py-24 bg-zinc-50 dark:bg-zinc-900/50 border-y border-zinc-200 dark:border-zinc-800 scroll-mt-28">
@@ -197,25 +185,7 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onBookClick, onNaviga
                 </div>
             </section>
 
-            {/* DEMO SECTION */}
-            <section id="demo" className="py-24 px-6 relative bg-zinc-50 dark:bg-zinc-900/50 border-t border-zinc-200 dark:border-zinc-800 scroll-mt-28">
-                <div className="max-w-7xl mx-auto">
-                    <div className="text-center mb-16 space-y-4">
-                        <h2 className="text-3xl md:text-5xl font-bold">Experience the Future</h2>
-                        <p className="text-zinc-500 max-w-2xl mx-auto">
-                            Don't just take our word for it. Paste your website below, and our system will instantly train a voice agent on your business.
-                        </p>
-                    </div>
 
-                    <DemoWidget theme={theme} />
-
-                    <div className="mt-8 text-center">
-                        <p className="text-xs font-mono-tech text-zinc-400">
-                            * This is a live demonstration using Google's Gemini 2.5 Flash model.
-                        </p>
-                    </div>
-                </div>
-            </section>
 
             {/* HOW IT WORKS */}
             <HowItWorksSection />

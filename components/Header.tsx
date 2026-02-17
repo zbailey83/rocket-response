@@ -55,6 +55,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, toggleTheme, onBookClick 
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-zinc-600 dark:text-zinc-400">
           <button onClick={() => handleNavClick('/', '#features')} className="hover:text-accent-blue transition-colors">Features</button>
           <button onClick={() => handleNavClick('/', '#how-it-works')} className="hover:text-accent-blue transition-colors">How It Works</button>
+          <button onClick={() => handleNavClick('/pricing', '#demo')} className="hover:text-accent-blue transition-colors">Live Demo</button>
           <button onClick={() => handleNavClick('/pricing')} className="hover:text-accent-blue transition-colors">Pricing</button>
           <button onClick={() => handleNavClick('/pricing', '#comparison')} className="hover:text-accent-blue transition-colors">Comparison</button>
           <button onClick={() => handleNavClick('/pricing', '#faq')} className="hover:text-accent-blue transition-colors">FAQ</button>
@@ -103,6 +104,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, toggleTheme, onBookClick 
           <nav className="flex flex-col gap-4 text-lg font-medium text-zinc-600 dark:text-zinc-400">
             <button onClick={() => handleNavClick('/', '#features')} className="text-left hover:text-accent-blue transition-colors">Features</button>
             <button onClick={() => handleNavClick('/', '#how-it-works')} className="text-left hover:text-accent-blue transition-colors">How It Works</button>
+            <button onClick={() => handleNavClick('/pricing', '#demo')} className="text-left hover:text-accent-blue transition-colors">Live Demo</button>
             <button onClick={() => handleNavClick('/pricing')} className="text-left hover:text-accent-blue transition-colors">Pricing</button>
             <button onClick={() => handleNavClick('/pricing', '#comparison')} className="text-left hover:text-accent-blue transition-colors">Comparison</button>
             <button onClick={() => handleNavClick('/pricing', '#faq')} className="text-left hover:text-accent-blue transition-colors">FAQ</button>
