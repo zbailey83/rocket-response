@@ -43,7 +43,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, toggleTheme, onBookClick 
 
           <div className="flex flex-col">
             <h1 className="text-sm font-bold tracking-wider font-mono-tech text-zinc-900 dark:text-zinc-100 transition-colors duration-300">
-              ROCKET_RESPONDER<span className="text-accent-blue">.AI</span>
+              ROCKET RESPONSE <span className="text-accent-blue">AI</span>
             </h1>
             <span className="text-[10px] text-zinc-500 font-mono-tech uppercase tracking-widest hidden sm:inline-block">
               Voice Automation Systems

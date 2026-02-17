@@ -34,8 +34,8 @@ export const HomePage: React.FC<HomePageProps> = ({ theme, onBookClick, onNaviga
             <Hero
                 showLogo={true}
                 headline={{
-                    line1: "ROCKET RESPONSE",
-                    line2: "AI"
+                    line1: "ROCKET RESPONSE AI",
+                    line2: ""
                 }}
                 tagline="Voice Automation Systems"
                 subtitle="AI-Powered Agents That Answer, Book, and Follow Up With Every Lead — 24/7/365."
